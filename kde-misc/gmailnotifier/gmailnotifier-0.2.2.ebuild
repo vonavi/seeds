@@ -7,8 +7,7 @@ EAPI="4"
 inherit kde4-base
 
 MY_PN="gmailnotifier-keluoinhac"
-MY_PV="0.2.2"
-MY_P=${MY_PN}-${MY_PV}
+MY_P=${MY_PN}-${PV}
 
 DESCRIPTION="GMail Notifier Plasmoid"
 HOMEPAGE="http://kde-apps.org/content/show.php?content=153658"
@@ -18,5 +17,10 @@ LICENSE="GPL-2"
 KEYWORDS="~amd64 ~x86"
 SLOT="0"
 IUSE=""
+
+RDEPEND="dev-qt/qtcore:4
+	dev-qt/qtgui:4
+	$(add_kdebase_dep kdelibs)
+	media-libs/phonon"
 
 S="${WORKDIR}/${MY_P}"
