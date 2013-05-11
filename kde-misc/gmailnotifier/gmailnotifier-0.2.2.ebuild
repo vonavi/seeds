@@ -18,9 +18,7 @@ KEYWORDS="~amd64 ~x86"
 SLOT="0"
 IUSE=""
 
-RDEPEND="dev-qt/qtcore:4
-	dev-qt/qtgui:4
-	$(add_kdebase_dep kdelibs)
-	media-libs/phonon"
+RDEPEND="dev-qt/qtgui:4
+	$(add_kdebase_dep kdelibs)"
 
 S="${WORKDIR}/${MY_P}"
