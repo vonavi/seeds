@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription>UCI chess engine http://www.stockfishchess.com/</longdescription>
+	<use>
+		<flag name="optimize">Enable optimizations</flag>
+		<flag name="popcnt">x86 64-bit with popcnt support</flag>
+	</use>
+	<upstream>
+		<remote-id type="github">mcostalba/Stockfish</remote-id>
+	</upstream>
+</pkgmetadata>
