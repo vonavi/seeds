@@ -1,17 +1,17 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI=4
 inherit games toolchain-funcs
 
-DESCRIPTION="A UCI chess engine"
-SRC_URI="https://github.com/mcostalba/Stockfish/archive/sf_4.tar.gz"
+DESCRIPTION="UCI chess engine http://www.stockfishchess.com/"
+SRC_URI="https://github.com/mcostalba/Stockfish/archive/sf_${PV}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="-debug -optimize"
+IUSE="debug optimize"
 
 case $(tc-arch) in
 	"x86"   ) IUSE+=" sse"    ;;
@@ -26,7 +26,7 @@ src_compile() {
 	local makeopts="ARCH="
 
 	case $(tc-arch) in
-		"x86" )
+		"x86"   )
 			makeopts+="x86-32"
 			! use sse && makeopts+="-old"
 			;;
