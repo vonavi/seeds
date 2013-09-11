@@ -6,19 +6,20 @@ EAPI=4
 inherit games toolchain-funcs
 
 DESCRIPTION="UCI chess engine http://www.stockfishchess.com/"
+HOMEPAGE="http://www.stockfishchess.com/"
 SRC_URI="https://github.com/mcostalba/Stockfish/archive/sf_${PV}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="debug optimize"
+IUSE="debug optimization"
 
 case $(tc-arch) in
 	"x86"   ) IUSE+=" sse"    ;;
 	"amd64" ) IUSE+=" popcnt" ;;
 esac
 
-DEPEND="optimize? ( sys-devel/gcc[lto] )"
+DEPEND="optimization? ( sys-devel/gcc[lto] )"
 
 S="${WORKDIR}/Stockfish-sf_${PV}/src"
 
@@ -37,7 +38,7 @@ src_compile() {
 	esac
 
 	use debug && makeopts+=" debug=yes"
-	! use optimize && makeopts+=" optimize=no"
+	! use optimization && makeopts+=" optimize=no"
 
 	emake build ${makeopts} || die "emake failed"
 }

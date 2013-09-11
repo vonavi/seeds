@@ -3,7 +3,7 @@
 <pkgmetadata>
 	<longdescription>UCI chess engine http://www.stockfishchess.com/</longdescription>
 	<use>
-		<flag name="optimize">Enable optimizations</flag>
+		<flag name="optimization">Accept upstream's choices for CXXFLAGS/LDFLAGS for optimization</flag>
 		<flag name="popcnt">x86 64-bit with popcnt support</flag>
 	</use>
 	<upstream>
