@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription>Very small utility to convert TTF files to EOT</longdescription>
+	<upstream>
+		<remote-id type="google-code">ttf2eot</remote-id>
+	</upstream>
+</pkgmetadata>
