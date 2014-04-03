@@ -1,13 +1,14 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-emacs/yasnippet/yasnippet-0.8.0.ebuild $
+# $Header: $
 
+EAPI=5
 inherit elisp
 
-DESCRIPTION="Yet another snippet extension for Emacs"
-HOMEPAGE="http://github.com/capitaomorte/yasnippet"
+DESCRIPTION="YASnippet is a template system for Emacs."
+HOMEPAGE="https://github.com/capitaomorte/yasnippet"
 SRC_URI="https://github.com/downloads/capitaomorte/yasnippet/${P}.tar.gz"
-LICENSE="GPL-2"
+LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
