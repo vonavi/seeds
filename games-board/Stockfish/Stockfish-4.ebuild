@@ -1,13 +1,13 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=4
+EAPI=5
 inherit games toolchain-funcs
 
 DESCRIPTION="UCI chess engine http://www.stockfishchess.com/"
 HOMEPAGE="http://www.stockfishchess.com/"
-SRC_URI="https://github.com/mcostalba/Stockfish/archive/sf_${PV}.tar.gz"
+SRC_URI="https://github.com/mcostalba/${PN}/archive/sf_${PV}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
@@ -21,7 +21,11 @@ esac
 
 DEPEND="optimization? ( sys-devel/gcc[lto] )"
 
-S="${WORKDIR}/Stockfish-sf_${PV}/src"
+S="${WORKDIR}/${PN}-sf_${PV}/src"
+
+pkg_setup() {
+	games_pkg_setup
+}
 
 src_compile() {
 	local makeopts="ARCH="
@@ -44,7 +48,7 @@ src_compile() {
 }
 
 src_install() {
-	dogamesbin ${PN} || die "dogamesbin failed"
+	dogamesbin stockfish || die "dogamesbin failed"
 	dodoc ../Copying.txt ../Readme.md || die "dodoc failed"
 	prepgamesdirs
 }
