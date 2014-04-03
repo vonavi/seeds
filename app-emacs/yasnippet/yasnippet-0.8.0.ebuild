@@ -7,7 +7,8 @@ inherit elisp
 
 DESCRIPTION="YASnippet is a template system for Emacs."
 HOMEPAGE="https://github.com/capitaomorte/yasnippet"
-SRC_URI="https://github.com/downloads/capitaomorte/yasnippet/${P}.tar.gz"
+SRC_URI="https://github.com/capitaomorte/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
+
 LICENSE="GPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
