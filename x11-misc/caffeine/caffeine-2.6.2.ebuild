@@ -31,6 +31,8 @@ DEPEND="dev-python/dbus-python
 	x11-apps/xvinfo"
 RDEPEND="${DEPEND}"
 
+DOCS="COPYING* ICONS.INFO README VERSION"
+
 S="${WORKDIR}/${PN}"
 
 src_prepare() {
