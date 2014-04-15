@@ -53,8 +53,6 @@ src_install() {
 	distutils-r1_src_install
 
 	_clean_up_locales
-	# Show desktop entry everywhere
-	sed -i "/^OnlyShowIn/d" "${ED}"/usr/share/applications/caffeine.desktop
 }
 
 pkg_preinst() {
