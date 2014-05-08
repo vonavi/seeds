@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription>Simple Alarm-Clock plasmoid. Supports list of alarms, custom sound, message and command for each alarm node. Works without Akonadi.</longdescription>
+	<upstream>
+		<maintainer>
+			<email>kaperang07@gmail.com</email>
+			<name>Fl@sh</name>
+		</maintainer>
+		<remote-id type="github">F1ash/kde-plasma-alarm-clock</remote-id>
+	</upstream>
+</pkgmetadata>
