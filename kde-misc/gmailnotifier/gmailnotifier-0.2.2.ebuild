@@ -18,7 +18,8 @@ KEYWORDS="~amd64 ~x86"
 SLOT="0"
 IUSE=""
 
-RDEPEND="dev-qt/qtgui:4
-	$(add_kdebase_dep kdelibs)"
+RDEPEND="
+	$(add_kdebase_dep plasma-workspace)
+"
 
 S="${WORKDIR}/${MY_P}"
