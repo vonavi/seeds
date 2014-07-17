@@ -39,7 +39,11 @@ DOCS="COPYING* ICONS.INFO README VERSION"
 
 S="${WORKDIR}/${PN}"
 
-PATCHES=( "${FILESDIR}"/${P}-fix-screensaver-path.patch )
+src_prepare() {
+	# Show desktop entry everywhere
+	sed '/^OnlyShowIn/d' \
+		-i share/applications/caffeine.desktop || die "fixing .desktop file failed"
+}
 
 _clean_up_locales() {
 	einfo "Cleaning up locales..."
@@ -56,8 +60,6 @@ python_install() {
 	distutils-r1_python_install
 
 	_clean_up_locales
-	# Show desktop entry everywhere
-	sed -i "/^OnlyShowIn/d" "${ED}"/usr/share/applications/caffeine.desktop
 }
 
 pkg_preinst() {

@@ -38,8 +38,6 @@ DOCS="COPYING* ICONS.INFO README VERSION"
 
 S="${WORKDIR}/${PN}"
 
-PATCHES=( "${FILESDIR}"/${P}-fix-screensaver-path.patch )
-
 _clean_up_locales() {
 	einfo "Cleaning up locales..."
 	for lang in ${LANGS}; do
