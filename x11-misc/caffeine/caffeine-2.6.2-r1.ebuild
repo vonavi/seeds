@@ -56,8 +56,8 @@ _clean_up_locales() {
 	done
 }
 
-python_install() {
-	distutils-r1_python_install
+src_install() {
+	distutils-r1_src_install
 
 	_clean_up_locales
 }
