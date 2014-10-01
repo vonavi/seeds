@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription>FriCAS is an advanced computer algebra system. Its capabilities range from calculus (integration and differentiation) to abstract algebra. It can plot functions and has integrated help system.</longdescription>
+	<use>
+		<flag name="aldor">Add support for Aldor Programming Language</flag>
+		<flag name="sbcl">Add support for Steel Bank Common Lisp
+    (<pkg>dev-lisp/sbcl</pkg>)</flag>
+		<flag name="cmucl">Add support for CMU Common Lisp
+    (<pkg>dev-lisp/cmucl</pkg>)</flag>
+		<flag name="gcl">Add support for GNU Common Lisp
+    (<pkg>dev-lisp/gcl</pkg>)</flag>
+		<flag name="ecls">Add support for Embeddable Common Lisp
+    (<pkg>dev-lisp/ecls</pkg>)</flag>
+		<flag name="clisp">Add support for GNU CLISP
+    (<pkg>dev-lisp/clisp</pkg>)</flag>
+		<flag name="clozurecl">Add support for Clozure Common Lisp
+    (<pkg>dev-lisp/clozurecl</pkg>)</flag>
+	</use>
+	<upstream>
+		<remote-id type="sourceforge">fricas</remote-id>
+	</upstream>
+</pkgmetadata>
