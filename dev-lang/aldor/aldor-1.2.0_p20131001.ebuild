@@ -21,8 +21,8 @@ IUSE="doc emacs"
 
 RDEPEND="emacs? ( virtual/emacs )"
 DEPEND="${RDEPEND}
-	doc? ( app-arch/gzip virtual/latex-base )
-	emacs? ( app-text/noweb )"
+	doc? ( app-arch/gzip )
+	emacs? ( app-text/noweb doc? ( virtual/latex-base ) )"
 
 DOCS="AUTHORS COPYRIGHT LICENSE README*"
 
