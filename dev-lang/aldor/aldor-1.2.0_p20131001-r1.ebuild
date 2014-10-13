@@ -3,14 +3,15 @@
 # $Header: $
 
 EAPI=5
-inherit autotools elisp-common
+
+EGIT_REPO_URI="git://github.com/pippijn/aldor.git"
+EGIT_COMMIT="832e273"
+
+inherit git-r3 autotools elisp-common
 
 DESCRIPTION="The Aldor Programming Language"
 HOMEPAGE="http://pippijn.github.io/aldor"
-SRC_URI="https://api.github.com/repos/pippijn/aldor/tarball/832e273 -> ${P}.tar.gz
-	doc? ( http://aldor.org/docs/aldorug.pdf.gz
-		http://aldor.org/docs/libaldor.pdf.gz
-		http://aldor.org/docs/tutorial.pdf.gz
+SRC_URI="doc? ( http://aldor.org/docs/libaldor.pdf.gz
 		ftp://ftp-sop.inria.fr/cafe/software/algebra/algebra.html.tar.gz )
 	emacs? ( http://hemmecke.de/aldor/aldor.el.nw )"
 
@@ -21,12 +22,12 @@ IUSE="doc emacs"
 
 RDEPEND="emacs? ( virtual/emacs )"
 DEPEND="${RDEPEND}
-	doc? ( app-arch/gzip )
-	emacs? ( app-text/noweb doc? ( virtual/latex-base ) )"
+	doc? ( app-arch/gzip virtual/latex-base )
+	emacs? ( app-text/noweb )"
 
 DOCS="AUTHORS COPYRIGHT LICENSE README*"
 
-S="${WORKDIR}/pippijn-aldor-832e273/aldor"
+S="${WORKDIR}/${P}/aldor"
 
 src_prepare() {
 	eautoreconf
@@ -37,12 +38,17 @@ src_configure() {
 }
 
 src_compile() {
+	einfo "Compiling aldor and its libraries"
+	emake
+
 	if use doc; then
 		einfo "Documentation"
-		cp "${DISTDIR}/aldorug.pdf.gz" .
+		( cd aldorug; emake aldorug.pdf ) || die "make aldorug.pdf failed"
+		( cd lib/aldor/tutorial
+			pdflatex tutorial.tex
+			pdflatex tutorial.tex ) || die "make tutorial.pdf failed"
 		cp "${DISTDIR}/libaldor.pdf.gz" .
-		cp "${DISTDIR}/tutorial.pdf.gz" .
-		gunzip aldorug.pdf.gz libaldor.pdf.gz tutorial.pdf.gz
+		gunzip libaldor.pdf.gz
 		tar xzf "${DISTDIR}/algebra.html.tar.gz"
 	fi
 
@@ -58,17 +64,17 @@ src_compile() {
 			pdflatex aldor-mode.tex
 		fi
 	fi
-
-	einfo "Compiling aldor and its libraries"
-	emake
 }
 
 src_install() {
+	einfo "Installing aldor and its libraries"
+	emake DESTDIR="${D}" install
+
 	if use doc; then
 		einfo "Installing the aldor documentation"
 		insinto "/usr/share/doc/${P}"
-		doins *.pdf
-		doins -r algebra.html
+		doins aldorug/aldorug.pdf lib/aldor/tutorial/tutorial.pdf *.pdf
+		dohtml -r algebra.html
 	fi
 
 	if use emacs; then
@@ -77,8 +83,11 @@ src_install() {
 		elisp-site-file-install 64aldor-gentoo.el
 	fi
 
-	einfo "Installing aldor and its libraries"
-	emake DESTDIR="${D}" install
+	# Add information about ALDORROOT to environmental variables
+	cat >> 99aldor <<- EOF
+		ALDORROOT=${EPREFIX}/usr
+	EOF
+	doenvd 99aldor
 }
 
 pkg_postinst() {
