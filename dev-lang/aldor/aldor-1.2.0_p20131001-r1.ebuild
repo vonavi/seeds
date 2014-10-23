@@ -72,7 +72,7 @@ src_install() {
 
 	if use doc; then
 		einfo "Installing the aldor documentation"
-		insinto "/usr/share/doc/${P}"
+		insinto "/usr/share/doc/${PF}"
 		doins aldorug/aldorug.pdf lib/aldor/tutorial/tutorial.pdf *.pdf
 		dohtml -r algebra.html
 	fi
