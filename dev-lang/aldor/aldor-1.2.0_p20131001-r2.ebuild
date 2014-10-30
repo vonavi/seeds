@@ -6,8 +6,10 @@ EAPI=5
 
 EGIT_REPO_URI="git://github.com/pippijn/aldor.git"
 EGIT_COMMIT="832e273"
+AUTOTOOLS_AUTORECONF=1
+AUTOTOOLS_IN_SOURCE_BUILD=1
 
-inherit git-r3 autotools elisp-common
+inherit git-r3 autotools-utils elisp-common
 
 DESCRIPTION="The Aldor Programming Language"
 HOMEPAGE="http://pippijn.github.io/aldor"
@@ -22,27 +24,16 @@ IUSE="doc emacs"
 
 RDEPEND="emacs? ( virtual/emacs )"
 DEPEND="${RDEPEND}
+	virtual/yacc
 	doc? ( app-arch/gzip virtual/latex-base )
 	emacs? ( app-text/noweb )"
 
-DOCS="AUTHORS COPYRIGHT LICENSE README*"
+DOCS=( AUTHORS COPYRIGHT LICENSE )
 
 S="${WORKDIR}/${P}/aldor"
 
-src_prepare() {
-	eautoreconf
-}
-
-src_configure() {
-	econf
-}
-
 src_compile() {
-	einfo "Compiling aldor and its libraries"
-	emake
-
-	if use doc; then
-		einfo "Documentation"
+	if use doc ; then
 		( cd aldorug; emake aldorug.pdf ) || die "make aldorug.pdf failed"
 		( cd lib/aldor/tutorial
 			pdflatex tutorial.tex
@@ -52,39 +43,35 @@ src_compile() {
 		tar xzf "${DISTDIR}/algebra.html.tar.gz"
 	fi
 
-	if use emacs; then
-		einfo "The aldor emacs mode"
+	if use emacs ; then
 		notangle "${DISTDIR}/aldor.el.nw" > aldor.el
 		notangle -Rinit.el "${DISTDIR}/aldor.el.nw" | \
 			sed -e '1s/^.*$/;; aldor mode/' > 64aldor-gentoo.el
-		if use doc; then
+		if use doc ; then
 			einfo "Documentation for the aldor emacs mode"
 			noweave "${DISTDIR}/aldor.el.nw" > aldor-mode.tex
 			pdflatex aldor-mode.tex
 			pdflatex aldor-mode.tex
 		fi
 	fi
+
+	autotools-utils_src_compile
 }
 
 src_install() {
-	einfo "Installing aldor and its libraries"
-	emake DESTDIR="${D}" install
-
-	if use doc; then
-		einfo "Installing the aldor documentation"
-		insinto "/usr/share/doc/${PF}"
-		doins aldorug/aldorug.pdf lib/aldor/tutorial/tutorial.pdf *.pdf
-		dohtml -r algebra.html
+	if use doc ; then
+		DOCS+=( aldorug/aldorug.pdf lib/aldor/tutorial/tutorial.pdf libaldor.pdf )
+		HTML_DOCS=( algebra.html/ )
 	fi
-
-	if use emacs; then
-		einfo "Installing the aldor emacs mode"
+	if use emacs ; then
+		DOCS+=( aldor-mode.pdf )
 		elisp-site-file-install aldor.el
 		elisp-site-file-install 64aldor-gentoo.el
 	fi
+	autotools-utils_src_install
 
 	# Add information about ALDORROOT to environmental variables
-	cat >> 99aldor <<- EOF
+	cat > 99aldor <<- EOF
 		ALDORROOT=${EPREFIX}/usr
 	EOF
 	doenvd 99aldor
