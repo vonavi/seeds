@@ -69,8 +69,11 @@ MAKEOPTS="${MAKEOPTS} -j1"
 S="${WORKDIR}/${MY_P}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P%_*}-disable-rpath.patch
-	sed -i -e 's%/usr/bin/env python%/usr/bin/env python2%' configure || die
+	epatch \
+		"${FILESDIR}/${P}-disable-rpath.patch" \
+		"${FILESDIR}/${P}-disable-petscnagupgrade.patch"
+	python_setup
+	python_fix_shebang configure
 }
 
 src_configure() {

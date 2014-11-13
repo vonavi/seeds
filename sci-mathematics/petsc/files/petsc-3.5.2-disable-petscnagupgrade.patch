@@ -1,0 +1,11 @@
+--- conf/rules	2014-09-09 08:26:40.000000000 +0400
++++ conf/rules-patched	2014-11-13 19:20:06.000000000 +0300
+@@ -13,7 +13,7 @@
+         fi
+ 
+ chk_upgrade:
+-	-@PETSC_DIR=${PETSC_DIR} ${PYTHON} ${PETSC_DIR}/bin/petscnagupgrade.py
++	-@true
+ 
+ chk_makej:
+ 	@parallel=false;\
