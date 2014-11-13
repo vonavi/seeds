@@ -6,7 +6,7 @@ EAPI=5
 
 PYTHON_COMPAT=( python2_7 )
 
-inherit eutils flag-o-matic fortran-2 python-any-r1 toolchain-funcs versionator
+inherit python-r1 python-utils-r1 eutils flag-o-matic fortran-2 toolchain-funcs versionator
 
 MY_P="${PN}-$(replace_version_separator _ -)"
 
@@ -17,8 +17,8 @@ SRC_URI="http://ftp.mcs.anl.gov/pub/petsc/release-snapshots/${MY_P}.tar.gz"
 LICENSE="petsc"
 SLOT="0"
 KEYWORDS="~x86 ~amd64"
-IUSE="afterimage boost complex-scalars cxx debug doc fftw
-	fortran hdf5 hypre mpi mumps scotch sparse superlu threads X"
+IUSE="afterimage boost complex-scalars cxx debug doc fftw fortran hdf5
+	hypre mpi mumps python scotch sparse superlu threads X"
 # Failed: imagemagick metis
 
 # hypre and superlu curretly exclude each other due to missing linking to hypre
@@ -203,13 +203,26 @@ src_install() {
 		doins include/mpiuni/*.h
 	fi
 
+	if use python ; then
+		python_foreach_impl python_domodule config/PETSc
+		python_foreach_impl python_domodule config/BuildSystem/*
+
+		insinto /usr/config
+		doins config/*.py
+		insinto /usr/bin
+		doins bin/*.py
+
+		insinto /usr/${PETSC_ARCH}/conf
+		doins ${PETSC_ARCH}/conf/RDict.db
+	fi
+
 	dolib.so ${PETSC_ARCH}/lib/*.so
 	dolib.so ${PETSC_ARCH}/lib/*.so.*
 
 	insinto /usr/conf
 	doins conf/{rules,test,variables}
 	insinto /usr/${PETSC_ARCH}/conf
-	doins ${PETSC_ARCH}/conf/{petscrules,petscvariables,RDict.db}
+	doins ${PETSC_ARCH}/conf/{petscrules,petscvariables}
 
 	# Fix configuration files
 	sed -i \
