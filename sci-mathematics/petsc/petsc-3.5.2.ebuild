@@ -182,55 +182,59 @@ src_configure() {
 }
 
 src_install() {
-	# petsc install structure is very different from
-	# installing headers to /usr/include/petsc and lib to /usr/lib
-	# it also installs many unneeded executables and scripts
-	# so manual install is easier than cleanup after "emake install"
-	insinto /usr/include/${PN}
-	doins include/*.h*
-	insinto /usr/include/${PN}/${PETSC_ARCH}/include
-	doins ${PETSC_ARCH}/include/*
-	if use fortran; then
-		insinto /usr/include/${PN}/finclude
-		doins -r include/finclude/*
-	fi
-	if ! use mpi ; then
-		insinto /usr/include/${PN}/mpiuni
-		doins include/mpiuni/*.h
-	fi
-	insinto /usr/include/${PN}/conf
-	doins conf/{variables,rules,test}
-	insinto /usr/include/${PN}/${PETSC_ARCH}/conf
-	doins ${PETSC_ARCH}/conf/{petscrules,petscvariables,RDict.db}
-	insinto /usr/include/${PN}/petsc-private
+	# PETSc install structure is very different from installing headers
+	# to /usr/include/petsc and lib to /usr/lib, it also installs many
+	# unneeded executables and scripts, so manual install is easier than
+	# cleanup after "emake install".
+	insinto /usr/include
+	doins include/*.h
+	insinto /usr/${PETSC_ARCH}/include
+	doins ${PETSC_ARCH}/include/*.h
+	insinto /usr/include/petsc-private
 	doins include/petsc-private/*.h
 
-	# fix configuration files: replace "${S}" by installed location
-	sed -i \
-		-e "s:"${S}"::g" \
-		"${ED}"/usr/include/${PN}/${PETSC_ARCH}/include/petscconf.h \
-		"${ED}"/usr/include/${PN}/${PETSC_ARCH}/conf/petscvariables || die
-	sed -i \
-		-e "s:-I/include:-I${EPREFIX}/usr/include/${PN}:g" \
-		-e "s:-I/linux-gnu-cxx-opt/include:-I${EPREFIX}/usr/include/${PN}/${PETSC_ARCH}/include/:g" \
-		"${ED}"/usr/include/${PN}/${PETSC_ARCH}/conf/petscvariables || die
-	sed -i \
-		-e "s:usr/lib:usr/$(get_libdir):g" \
-		"${ED}"/usr/include/${PN}/${PETSC_ARCH}/include/petscconf.h || die
+	if use fortran ; then
+		insinto /usr/include/finclude
+		doins -r include/finclude/*
+	fi
 
-	# add information about installation directory and
-	# PETSC_ARCH to environmental variables
-	cat >> 99petsc <<- EOF
-		PETSC_ARCH=${PETSC_ARCH}
-		PETSC_DIR=${EPREFIX}/usr/include/${PN}
-	EOF
-	doenvd 99petsc
+	if ! use mpi ; then
+		insinto /usr/include/mpiuni
+		doins include/mpiuni/*.h
+	fi
 
 	dolib.so ${PETSC_ARCH}/lib/*.so
 	dolib.so ${PETSC_ARCH}/lib/*.so.*
 
+	insinto /usr/conf
+	doins conf/{rules,test,variables}
+	insinto /usr/${PETSC_ARCH}/conf
+	doins ${PETSC_ARCH}/conf/{petscrules,petscvariables,RDict.db}
+
+	# Fix configuration files
+	sed -i \
+		-e "s:${S}:${EPREFIX}/usr:g" \
+		-e "s:/usr/lib:/usr/$(get_libdir):g" \
+		"${ED}"/usr/${PETSC_ARCH}/include/petscconf.h || die
+	sed -i \
+		-e "s:${S}:${EPREFIX}/usr:g" \
+		-e "s:-I/include:-I${EPREFIX}/usr/include:g" \
+		-e "s:-I/linux-gnu-cxx-opt/include:-I${EPREFIX}/usr/${PETSC_ARCH}/include:g" \
+		"${ED}"/usr/${PETSC_ARCH}/conf/petscvariables || die
+	sed -i \
+		-e 's:${PETSC_DIR}/${PETSC_ARCH}/lib:${PETSC_DIR}/'$(get_libdir)':' \
+		"${ED}"/usr/conf/variables || die
+
+	# Add information about installation directory and PETSC_ARCH to
+	# environmental variables
+	cat > 99petsc <<- EOF
+		PETSC_ARCH=${PETSC_ARCH}
+		PETSC_DIR=${EPREFIX}/usr
+	EOF
+	doenvd 99petsc
+
 	if use doc ; then
-		einfo "installing documentation (this could take a while)"
+		einfo "Installing documentation (this could take a while)"
 		dodoc docs/manual.pdf
 		dohtml -r docs/*.html docs/changes docs/manualpages
 	fi
