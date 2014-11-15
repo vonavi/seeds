@@ -18,7 +18,7 @@ IUSE=""
 
 DEPEND="
 	dev-python/numpy[${PYTHON_USEDEP}]
-	=sci-mathematics/petsc-${PV}*[python]
+	=sci-mathematics/petsc-${PV}*
 "
 RDEPEND="${DEPEND}"
 
