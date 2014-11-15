@@ -41,7 +41,7 @@ src_configure() {
 src_compile() {
 	# PETSc compiles are automatically parallel, do not provide the -j
 	# option to make
-	SLEPC_DIR=${S} MAKEOPTS= emake || die "emake failed"
+	SLEPC_DIR=${S} emake -j1 || die "emake failed"
 }
 
 src_install() {
