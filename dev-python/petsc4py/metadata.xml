@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+	<longdescription>This package provides Python bindings for PETSc, the Portable, Extensible Toolkit for Scientific Computation.</longdescription>
+	<upstream>
+		<remote-id type="bitbucket">petsc/petsc4py</remote-id>
+	</upstream>
+</pkgmetadata>
