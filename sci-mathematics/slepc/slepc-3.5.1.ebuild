@@ -5,9 +5,7 @@
 EAPI=5
 
 PYTHON_COMPAT=( python2_7 )
-inherit python-any-r1 versionator
-
-MY_MINORV=$(get_version_component_range 1-2)
+inherit python-any-r1
 
 DESCRIPTION="Scalable Library for Eigenvalue Problem Computations"
 HOMEPAGE="http://www.grycap.upv.es/slepc/"
@@ -21,8 +19,7 @@ IUSE="cxx debug fortran"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 DEPEND="
 	${PYTHON_DEPS}
-	>=sci-mathematics/petsc-${MY_MINORV}[cxx?,debug?,fortran?,python]
-	>=dev-python/petsc4py-${MY_MINORV}
+	>=sci-mathematics/petsc-${PV}[cxx?,debug?,fortran?,python]
 "
 RDEPEND="${DEPEND}"
 
