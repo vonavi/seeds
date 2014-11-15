@@ -2,77 +2,77 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=5
 
-inherit python
+PYTHON_COMPAT=( python2_7 )
+inherit python-any-r1 versionator
 
-MY_PV="${PV/_/-}"
-MY_P="${PN}-${MY_PV}"
+MY_MINORV=$(get_version_component_range 1-2)
+
 DESCRIPTION="Scalable Library for Eigenvalue Problem Computations"
 HOMEPAGE="http://www.grycap.upv.es/slepc/"
-SRC_URI="http://www.grycap.upv.es/slepc/download/distrib/${MY_P}.tar.gz"
+SRC_URI="http://www.grycap.upv.es/slepc/download/distrib/${P}.tar.gz"
 
 LICENSE=""
 SLOT="0"
-KEYWORDS="~amd64"
-IUSE="cxx debug fortran static-libs"
+KEYWORDS="~x86 ~amd64"
+IUSE="cxx debug fortran"
 
-DEPEND=">=sci-mathematics/petsc-3.1_p4[debug?,cxx?,fortran?]"
+REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+DEPEND="
+	${PYTHON_DEPS}
+	>=sci-mathematics/petsc-${MY_MINORV}[cxx?,debug?,fortran?,python]
+	>=dev-python/petsc4py-${MY_MINORV}
+"
 RDEPEND="${DEPEND}"
-
-S="${WORKDIR}/${MY_P}"
 
 pkg_setup() {
 	unset SLEPC_DIR
 	export SLEPC_ARCH=${PETSC_ARCH} \
-		|| die "\PETSC_ARCH environment variable not set"
-}
-
-src_prepare() {
-	sed -i -e "s:petscdir,'include','petscversion.h':petscdir,'petscversion.h':" \
-		config/petscversion.py \
-		|| die "sed petscversion.py failed"
-	sed -i -e 's:${PETSC_DIR}/include:${PETSC_DIR}:' \
-		makefile \
-		|| die "sed makefile failed"
+		|| die "PETSC_ARCH environment variable not set"
 }
 
 src_configure() {
-	${PYTHON} "${S}/config/configure.py" \
+	python_setup
+	${PYTHON} config/configure.py \
 		|| die "configuration failed"
 }
 
 src_compile() {
-	SLEPC_DIR=${S} emake || die "emake failed"
+	# PETSc compiles are automatically parallel, do not provide the -j
+	# option to make
+	SLEPC_DIR=${S} MAKEOPTS= emake || die "emake failed"
 }
 
 src_install() {
-	insinto /usr/include/"${PN}"
-	doins "${S}"/include/*.h
-	insinto /usr/include/"${PN}/${SLEPC_ARCH}"/include
-	doins "${S}/${SLEPC_ARCH}"/include/*
-	insinto /usr/include/"${PN}"/conf
-	if use fortran; then
-		insinto /usr/include/"${PN}"/finclude
-		doins "${S}"/include/finclude/*.h
+	insinto /usr/include
+	doins include/*.h
+	insinto /usr/${SLEPC_ARCH}/include
+	doins ${SLEPC_ARCH}/include/*.h
+	insinto /usr/include/slepc-private
+	doins include/slepc-private/*.h
+
+	if use fortran ; then
+		insinto /usr/include/finclude
+		doins -r include/finclude/*
 	fi
-	insinto /usr/include/"${PN}"/conf
-	doins "${S}"/conf/*
-	insinto /usr/include/"${PN}/${SLEPC_ARCH}"/conf
-	doins "${S}/${SLEPC_ARCH}"/conf/slepc{rules,variables}
 
-	insinto /usr/include/"${PN}"/private
-	doins "${S}"/include/private/*.h
+	dolib.so "${PETSC_ARCH}"/lib/*.so
+	dolib.so "${PETSC_ARCH}"/lib/*.so.*
 
-	dosed "s:SLEPC_INSTALL_DIR =.*:SLEPC_INSTALL_DIR = /usr:" /usr/include/"${PN}/${SLEPC_ARCH}"/conf/slepcvariables
+	insinto /usr/conf
+	doins conf/*
+	insinto /usr/${SLEPC_ARCH}/conf
+	doins ${SLEPC_ARCH}/conf/{slepcrules,slepcvariables}
 
-	cat > ${T}/99slepc <<EOF
-SLEPC_ARCH=${SLEPC_ARCH}
-SLEPC_DIR=/usr/include/${PN}
-EOF
-	doenvd ${T}/99slepc
+	# Fix configuration files
+	sed -i \
+		-e "s:SLEPC_DESTDIR =.*:SLEPC_DESTDIR = /usr:" \
+		"${ED}"/usr/include/"${PN}/${SLEPC_ARCH}"/conf/slepcvariables
 
-	use static-libs \
-		&& dolib.a  "${S}/${PETSC_ARCH}"/lib/*.a  \
-		|| dolib.so "${S}/${PETSC_ARCH}"/lib/*.so
+	cat > 99slepc <<- EOF
+		SLEPC_ARCH=${SLEPC_ARCH}
+		SLEPC_DIR=/usr/include/${PN}
+	EOF
+	doenvd 99slepc
 }
