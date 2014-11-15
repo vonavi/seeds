@@ -6,7 +6,7 @@ EAPI=5
 
 PYTHON_COMPAT=( python2_7 )
 
-inherit python-r1 python-utils-r1 eutils flag-o-matic fortran-2 toolchain-funcs versionator
+inherit python-r1 eutils flag-o-matic fortran-2 toolchain-funcs versionator
 
 MY_P="${PN}-$(replace_version_separator _ -)"
 
@@ -24,6 +24,7 @@ IUSE="afterimage boost complex-scalars cxx debug doc fftw fortran hdf5
 # hypre and superlu curretly exclude each other due to missing linking to hypre
 # if both are enabled
 REQUIRED_USE="
+	${PYTHON_REQUIRED_USE}
 	afterimage? ( X )
 	hdf5? ( mpi )
 	hypre? ( cxx mpi )
@@ -43,6 +44,7 @@ RDEPEND="
 	hypre? ( >=sci-libs/hypre-2.8.0b[mpi?] )
 	mpi? ( virtual/mpi[cxx?,fortran?] )
 	mumps? ( sci-libs/mumps[mpi?] sci-libs/scalapack )
+	python? ( ${PYTHON_DEPS} )
 	scotch? ( sci-libs/scotch[mpi?] )
 	sparse? ( sci-libs/suitesparse >=sci-libs/cholmod-1.7.0 )
 	superlu? ( sci-libs/superlu )
