@@ -54,7 +54,13 @@ src_install() {
 
 	if use fortran ; then
 		insinto /usr/include/finclude
-		doins -r include/finclude/*
+		doins include/finclude/*.{h,h90}
+		insinto /usr/include/finclude/ftn-auto
+		doins include/finclude/ftn-auto/*.h90
+		insinto /usr/include/finclude/ftn-custom
+		doins include/finclude/ftn-custom/*.h90
+		insinto /usr/${SLEPC_ARCH}/include
+		doins ${SLEPC_ARCH}/include/*.mod
 	fi
 
 	dolib.so "${PETSC_ARCH}"/lib/*.so
