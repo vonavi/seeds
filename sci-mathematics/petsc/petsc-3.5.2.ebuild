@@ -200,7 +200,13 @@ src_install() {
 
 	if use fortran ; then
 		insinto /usr/include/finclude
-		doins -r include/finclude/*
+		doins include/finclude/*.{h,h90}
+		insinto /usr/include/finclude/ftn-auto
+		doins include/finclude/ftn-auto/*.h90
+		insinto /usr/include/finclude/ftn-custom
+		doins include/finclude/ftn-custom/*.h90
+		insinto /usr/${PETSC_ARCH}/include
+		doins ${PETSC_ARCH}/include/*.mod
 	fi
 
 	if ! use mpi ; then
