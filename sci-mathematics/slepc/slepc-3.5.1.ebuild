@@ -17,11 +17,11 @@ KEYWORDS="~x86 ~amd64"
 IUSE="cxx debug fortran"
 
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
+RDEPEND=">=sci-mathematics/petsc-${PV}[cxx?,debug?,fortran?,python]"
 DEPEND="
+	${DEPEND}
 	${PYTHON_DEPS}
-	>=sci-mathematics/petsc-${PV}[cxx?,debug?,fortran?,python]
 "
-RDEPEND="${DEPEND}"
 
 pkg_setup() {
 	unset SLEPC_DIR
