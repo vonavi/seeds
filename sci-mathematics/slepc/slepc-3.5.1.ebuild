@@ -60,8 +60,8 @@ src_install() {
 		doins ${SLEPC_ARCH}/include/*.mod
 	fi
 
-	dolib.so "${PETSC_ARCH}"/lib/*.so
-	dolib.so "${PETSC_ARCH}"/lib/*.so.*
+	dolib.so ${SLEPC_ARCH}/lib/*.so
+	dolib.so ${SLEPC_ARCH}/lib/*.so.*
 
 	insinto /usr/conf
 	doins conf/*
@@ -70,12 +70,15 @@ src_install() {
 
 	# Fix configuration files
 	sed -i \
-		-e "s:SLEPC_DESTDIR =.*:SLEPC_DESTDIR = /usr:" \
-		"${ED}"/usr/include/"${PN}/${SLEPC_ARCH}"/conf/slepcvariables
+		-e "s:${S}/${SLEPC_ARCH}/lib:/usr/$(get_libdir):g" \
+		"${ED}"/usr/${SLEPC_ARCH}/include/slepcconf.h || die
+	sed -i \
+		-e "s:SLEPC_DESTDIR =.*:SLEPC_DESTDIR = ${EPREFIX}/usr:" \
+		"${ED}"/usr/${SLEPC_ARCH}/conf/slepcvariables || die
 
 	cat > 99slepc <<- EOF
 		SLEPC_ARCH=${SLEPC_ARCH}
-		SLEPC_DIR=/usr/include/${PN}
+		SLEPC_DIR=${EPREFIX}/usr
 	EOF
 	doenvd 99slepc
 }
