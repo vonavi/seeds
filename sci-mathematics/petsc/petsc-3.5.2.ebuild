@@ -70,6 +70,36 @@ MAKEOPTS="${MAKEOPTS} -j1"
 
 S="${WORKDIR}/${MY_P}"
 
+# Add external library:
+# petsc_with use_flag libname libdir
+# petsc_with use_flag libname include linking_libs
+petsc_with() {
+	local withit lib=${2:-$1}
+	if use "$1" ; then
+		withit="--with-${lib}=1"
+		if [ $# -ge 4 ]; then
+			withit+=" --with-${lib}-include=${EPREFIX}${3}"
+			shift 3
+			withit+=" --with-${lib}-lib=$@"
+		else
+			withit+=" --with-${lib}-dir=${EPREFIX}${3:-/usr}"
+		fi
+	else
+		withit="--with-${lib}=0"
+	fi
+	echo "$withit"
+}
+
+# Select between configure options depending on use flag
+petsc_select() {
+	use "$1" && echo "--with-$2=$3" || echo "--with-$2=$4"
+}
+
+# PETSc uses --with-blah=1 and --with-blah=0 to en/disable options
+petsc_enable() {
+	use "$1" && echo "--with-${2:-$1}=1" || echo "--with-${2:-$1}=0"
+}
+
 src_prepare() {
 	epatch \
 		"${FILESDIR}/${P}-disable-rpath.patch" \
@@ -79,35 +109,6 @@ src_prepare() {
 }
 
 src_configure() {
-	# petsc uses --with-blah=1 and --with-blah=0 to en/disable options
-	petsc_enable() {
-		use "$1" && echo "--with-${2:-$1}=1" || echo "--with-${2:-$1}=0"
-	}
-	# add external library:
-	# petsc_with use_flag libname libdir
-	# petsc_with use_flag libname include linking_libs
-	petsc_with() {
-		local myuse p=${2:-${1}}
-		if use ${1}; then
-			myuse="--with-${p}=1"
-			if [[ $# -ge 4 ]]; then
-				myuse="${myuse} --with-${p}-include=${EPREFIX}${3}"
-				shift 3
-				myuse="${myuse} --with-${p}-lib=$@"
-			else
-				myuse="${myuse} --with-${p}-dir=${EPREFIX}${3:-/usr}"
-			fi
-		else
-			myuse="--with-${p}=0"
-		fi
-		echo ${myuse}
-	}
-
-	# select between configure options depending on use flag
-	petsc_select() {
-		use "$1" && echo "--with-$2=$3" || echo "--with-$2=$4"
-	}
-
 	local mylang
 	local myopt
 
@@ -154,36 +155,36 @@ src_configure() {
 		--with-cmake=cmake \
 		$(petsc_enable threads pthread) \
 		$(petsc_with afterimage afterimage \
-			/usr/include/libAfterImage -lAfterImage) \
+					 /usr/include/libAfterImage -lAfterImage) \
 		$(petsc_with hdf5) \
 		$(petsc_with hypre hypre \
-			/usr/include/hypre -lHYPRE) \
+					 /usr/include/hypre -lHYPRE) \
 		$(petsc_with sparse suitesparse) \
 		$(petsc_with superlu superlu \
-			/usr/include/superlu -lsuperlu) \
+					 /usr/include/superlu -lsuperlu) \
 		$(petsc_with X x) \
 		$(petsc_with X x11) \
 		$(petsc_with scotch ptscotch \
-			/usr/include/scotch \
-		[-lptesmumps,-lptscotch,-lptscotcherr,-lscotch,-lscotcherr]) \
+					 /usr/include/scotch \
+					 [-lptesmumps,-lptscotch,-lptscotcherr,-lscotch,-lscotcherr]) \
 		$(petsc_with mumps scalapack \
-			/usr/include/scalapack -lscalapack) \
+					 /usr/include/scalapack -lscalapack) \
 		$(petsc_with mumps mumps \
-			/usr/include \
-			[-lcmumps,-ldmumps,-lsmumps,-lzmumps,-lmumps_common,-lpord]) \
+					 /usr/include \
+					 [-lcmumps,-ldmumps,-lsmumps,-lzmumps,-lmumps_common,-lpord]) \
 		--with-imagemagick=0 \
 		--with-python=0 \
 		$(petsc_with boost) \
 		$(petsc_with fftw)
 
-# not yet tested:
-#		python bindings, netcdf, fftw
+	# not yet tested:
+	#		python bindings, netcdf, fftw
 
-# failed dependencies, perhaps fixed in upstream soon:
-#		$(petsc_with metis parmetis) \ # needs metis too (>=5.0.2)
-#		$(petsc_with imagemagick imagemagick \
-#			/usr/include/ImageMagick $($(tc-getPKG_CONFIG) --libs MagickCore)) \
-#		$(petsc_enable threads pthreadclasses) \
+	# failed dependencies, perhaps fixed in upstream soon:
+	#		$(petsc_with metis parmetis) \ # needs metis too (>=5.0.2)
+	#		$(petsc_with imagemagick imagemagick \
+	#			/usr/include/ImageMagick $($(tc-getPKG_CONFIG) --libs MagickCore)) \
+	#		$(petsc_enable threads pthreadclasses) \
 }
 
 src_install() {
