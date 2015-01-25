@@ -71,9 +71,9 @@ MAKEOPTS="${MAKEOPTS} -j1"
 S="${WORKDIR}/${MY_P}"
 
 # Add external library:
-# petsc_with use_flag libname libdir
-# petsc_with use_flag libname include linking_libs
-petsc_with() {
+# _petsc_with use_flag libname libdir
+# _petsc_with use_flag libname include linking_libs
+_petsc_with() {
 	local withit lib=${2:-$1}
 	if use "$1" ; then
 		withit="--with-${lib}=1"
@@ -91,12 +91,12 @@ petsc_with() {
 }
 
 # Select between configure options depending on use flag
-petsc_select() {
+_petsc_select() {
 	use "$1" && echo "--with-$2=$3" || echo "--with-$2=$4"
 }
 
 # PETSc uses --with-blah=1 and --with-blah=0 to en/disable options
-petsc_enable() {
+_petsc_enable() {
 	use "$1" && echo "--with-${2:-$1}=1" || echo "--with-${2:-$1}=0"
 }
 
@@ -142,49 +142,49 @@ src_configure() {
 		--with-precision=double \
 		--with-gnu-compilers \
 		--with-blas-lapack-lib="$($(tc-getPKG_CONFIG) --libs lapack)" \
-		$(petsc_enable debug debugging) \
-		$(petsc_enable mpi) \
-		$(petsc_select mpi cc mpicc $(tc-getCC)) \
-		$(petsc_select mpi cxx mpicxx $(tc-getCXX)) \
-		$(petsc_enable fortran) \
-		$(use fortran && echo "$(petsc_select mpi fc mpif77 $(tc-getF77))") \
-		$(petsc_enable mpi mpi-compilers) \
-		$(petsc_select complex-scalars scalar-type complex real) \
+		$(_petsc_enable debug debugging) \
+		$(_petsc_enable mpi) \
+		$(_petsc_select mpi cc mpicc $(tc-getCC)) \
+		$(_petsc_select mpi cxx mpicxx $(tc-getCXX)) \
+		$(_petsc_enable fortran) \
+		$(use fortran && echo "$(_petsc_select mpi fc mpif77 $(tc-getF77))") \
+		$(_petsc_enable mpi mpi-compilers) \
+		$(_petsc_select complex-scalars scalar-type complex real) \
 		--with-windows-graphics=0 \
 		--with-matlab=0 \
 		--with-cmake=cmake \
-		$(petsc_enable threads pthread) \
-		$(petsc_with afterimage afterimage \
-					 /usr/include/libAfterImage -lAfterImage) \
-		$(petsc_with hdf5) \
-		$(petsc_with hypre hypre \
-					 /usr/include/hypre -lHYPRE) \
-		$(petsc_with sparse suitesparse) \
-		$(petsc_with superlu superlu \
-					 /usr/include/superlu -lsuperlu) \
-		$(petsc_with X x) \
-		$(petsc_with X x11) \
-		$(petsc_with scotch ptscotch \
-					 /usr/include/scotch \
-					 [-lptesmumps,-lptscotch,-lptscotcherr,-lscotch,-lscotcherr]) \
-		$(petsc_with mumps scalapack \
-					 /usr/include/scalapack -lscalapack) \
-		$(petsc_with mumps mumps \
-					 /usr/include \
-					 [-lcmumps,-ldmumps,-lsmumps,-lzmumps,-lmumps_common,-lpord]) \
+		$(_petsc_enable threads pthread) \
+		$(_petsc_with afterimage afterimage \
+					  /usr/include/libAfterImage -lAfterImage) \
+		$(_petsc_with hdf5) \
+		$(_petsc_with hypre hypre \
+					  /usr/include/hypre -lHYPRE) \
+		$(_petsc_with sparse suitesparse) \
+		$(_petsc_with superlu superlu \
+					  /usr/include/superlu -lsuperlu) \
+		$(_petsc_with X x) \
+		$(_petsc_with X x11) \
+		$(_petsc_with scotch ptscotch \
+					  /usr/include/scotch \
+					  [-lptesmumps,-lptscotch,-lptscotcherr,-lscotch,-lscotcherr]) \
+		$(_petsc_with mumps scalapack \
+					  /usr/include/scalapack -lscalapack) \
+		$(_petsc_with mumps mumps \
+					  /usr/include \
+					  [-lcmumps,-ldmumps,-lsmumps,-lzmumps,-lmumps_common,-lpord]) \
 		--with-imagemagick=0 \
 		--with-python=0 \
-		$(petsc_with boost) \
-		$(petsc_with fftw)
+		$(_petsc_with boost) \
+		$(_petsc_with fftw)
 
 	# not yet tested:
 	#		python bindings, netcdf, fftw
 
 	# failed dependencies, perhaps fixed in upstream soon:
-	#		$(petsc_with metis parmetis) \ # needs metis too (>=5.0.2)
-	#		$(petsc_with imagemagick imagemagick \
+	#		$(_petsc_with metis parmetis) \ # needs metis too (>=5.0.2)
+	#		$(_petsc_with imagemagick imagemagick \
 	#			/usr/include/ImageMagick $($(tc-getPKG_CONFIG) --libs MagickCore)) \
-	#		$(petsc_enable threads pthreadclasses) \
+	#		$(_petsc_enable threads pthreadclasses) \
 }
 
 src_install() {
