@@ -27,7 +27,7 @@ RDEPEND=">=sys-libs/readline-4.3-r5
 	boehm-gc? ( >=dev-libs/boehm-gc-7.0[cxx,threads] )
 	fftw? ( >=sci-libs/fftw-3.0.1 )
 	gsl? ( sci-libs/gsl )
-	X? ( x11-misc/xdg-utils dev-lang/python dev-python/imaging[tk] )
+	X? ( x11-misc/xdg-utils dev-lang/python dev-python/pillow[tk] )
 	latex? ( virtual/latex-base dev-texlive/texlive-latexextra )
 	emacs? ( virtual/emacs )
 	vim-syntax? ( || ( app-editors/vim app-editors/gvim ) )"
