@@ -55,7 +55,7 @@ python_prepare_all() {
 		|| die "fixing .desktop file failed"
 	# Remove non-ASCII characters
 	sed -i \
-		-e 's/'$'\u00C2\u00A9''/(C)/' \
+		-e 's/\xc2\xa9/(c)/' \
 		caffeine{,-indicator} || die "fixing the executable file failed"
 
 	distutils-r1_python_prepare_all

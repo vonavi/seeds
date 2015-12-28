@@ -36,12 +36,6 @@ DOCS="COPYING* README VERSION"
 
 S="${WORKDIR}/${PN}"
 
-src_prepare() {
-	epatch "${FILESDIR}/${P}-improved-mate-screensaver.patch"
-	chmod +x caffeine-screensaver-mate-helper
-	distutils-r1_src_prepare
-}
-
 _clean_up_locales() {
 	einfo "Cleaning up locales..."
 	for lang in ${LANGS}; do
@@ -54,14 +48,19 @@ _clean_up_locales() {
 }
 
 python_prepare_all() {
+	# Add MATE support
+	epatch "${FILESDIR}/${P}-improved-mate-screensaver.patch"
+	chmod +x caffeine-screensaver-mate-helper
+
 	# Show desktop entry everywhere
 	sed -i \
 		-e '/^OnlyShowIn/d' \
 		share/applications/caffeine-indicator.desktop \
 		|| die "fixing .desktop file failed"
+
 	# Remove non-ASCII characters
 	sed -i \
-		-e 's/'$'\u00C2\u00A9''/(C)/' \
+		-e 's/\xc2\xa9/(c)/' \
 		caffeine{,-indicator} || die "fixing the executable file failed"
 
 	distutils-r1_python_prepare_all
