@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+        <upstream>
+                <maintainer status="inactive">
+                        <email>alan@inconshreveable.com</email>
+                        <name>Alan Shreve</name>
+		</maintainer>
+                <remote-id type="github">inconshreveable/ngrok</remote-id>
+	</upstream>
+        <description lang="en">Introspected tunnels to localhost</description>
+</pkgmetadata>
